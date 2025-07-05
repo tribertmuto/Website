@@ -1,11 +1,11 @@
 <?php
 // Database configuration
-$servername = "localhost";
+$servername = "127.0.0.1";  // Use 127.0.0.1 instead of localhost to avoid socket issues in some setups
 $username = "root";
-$password = "";
+$password = "";  // Leave blank if root has no password (default in XAMPP)
 $dbname = "registration_db";
 
-// Create connection to MySQL
+// Create connection to MySQL (default port 3306, no need to specify)
 $conn = new mysqli($servername, $username, $password, $dbname);
 
 // Check connection
@@ -15,7 +15,7 @@ if ($conn->connect_error) {
 
 // Check if form is submitted via POST method
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Receive form data using POST method
+    // Collect form data
     $first_name = $_POST['first_name'];
     $last_name = $_POST['last_name'];
     $email = $_POST['email'];
@@ -29,19 +29,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $country = $_POST['country'];
     $qualification = $_POST['qualification'];
     $courses_applied = $_POST['courses_applied'];
-    
-    // Handle hobbies array
-    $hobbies = "";
-    if (isset($_POST['hobbies'])) {
-        $hobbies = implode(", ", $_POST['hobbies']);
-    }
-    
-    // Prepare and bind statement to prevent SQL injection
-    $stmt = $conn->prepare("INSERT INTO student_tb (first_name, last_name, email, mobile, gender, dob, address, city, pin_code, state, country, hobbies, qualification, courses_applied) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    
+    $hobbies = isset($_POST['hobbies']) ? implode(", ", $_POST['hobbies']) : "";
+
+    // Insert data using prepared statement
+    $stmt = $conn->prepare("INSERT INTO student_tb 
+        (first_name, last_name, email, mobile, gender, dob, address, city, pin_code, state, country, hobbies, qualification, courses_applied) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
     $stmt->bind_param("ssssssssssssss", $first_name, $last_name, $email, $mobile, $gender, $dob, $address, $city, $pin_code, $state, $country, $hobbies, $qualification, $courses_applied);
-    
-    // Execute the statement
+
     if ($stmt->execute()) {
         echo "<!DOCTYPE html>
         <html lang='en'>
@@ -94,29 +90,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         echo "Error: " . $stmt->error;
     }
-    
-    // Close statement
+
     $stmt->close();
 } else {
     echo "Invalid request method. Please use the registration form.";
 }
-$conn = new mysqli($servername, $username, $password, $dbname, 3306);
-// Check if connection was successful
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-// Try different common configurations
-$servername = "127.0.0.1";  // Instead of localhost
-$username = "root";
-$password = "your_password";  // Add your MySQL password if you have one
-$dbname = "registration_db";
-// Create a new connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-// Check if connection was successful
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
 
-// Close connection
 $conn->close();
 ?>
+<?php
