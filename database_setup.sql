@@ -1,8 +1,8 @@
 -- Create the registration_db database
-CREATE DATABASE IF NOT EXISTS registration_db;
+CREATE DATABASE IF NOT EXISTS forest_db;
 
--- Use the registration_db database
-USE registration_db;
+-- Use My Details_db database
+USE My Details_db;
 
 -- Create the student_tb table
 CREATE TABLE student_tb (
@@ -22,7 +22,7 @@ CREATE TABLE student_tb (
     qualification TEXT NOT NULL,
     courses_applied TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+);silicosis 
 
 -- Optional: Create an index on email for faster lookups
 CREATE INDEX idx_email ON student_tb(email);
